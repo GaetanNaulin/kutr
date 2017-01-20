@@ -42,7 +42,6 @@ export const songStore = {
     }, [])
 
     this.state.recentlyPlayed = this.gatherRecentlyPlayedFromLocalStorage()
-    genreStore.init(this.all)
   },
 
   setupSong (song, album) {
