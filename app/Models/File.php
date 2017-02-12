@@ -214,7 +214,7 @@ class File
         // - "part_of_a_compilation" tag (used by iTunes), or
         // - "albumartist" (used by non-retarded applications).
         $props['compilation'] = (bool) (
-            isset($comments['part_of_a_compilation']) || ($props['albumartist'] && $props['albumartist'] != $props['artist'])
+            isset($comments['part_of_a_compilation']) || ($props['albumartist'] && $props['albumartist'] != $props['artist'] && stripos($props['artist'], $props['albumartist']) === false)
         );
 
         return $this->info = $props;
@@ -323,6 +323,8 @@ class File
             // If the "artist" tag is specified, use it.
             // Otherwise, re-use the existing model value.
             $artist = isset($info['artist']) ? Artist::get($info['artist']) : $this->song->album->artist;
+            if(isset($info['albumartist']))
+                $albumartist = isset($info['albumartist']) ? Artist::get($info['albumartist']) : $this->song->album->artist;
 
             $isCompilation = (bool) array_get($info, 'compilation');
 
@@ -337,14 +339,17 @@ class File
             if (isset($info['album'])) {
                 $album = $changeCompilationAlbumOnly
                     ? $this->song->album
-                    : Album::get($artist, $info['album'], $info['year'], $isCompilation);
+                    : Album::get((isset($albumartist) ? $albumartist : $artist), $info['album'], $info['year'], $isCompilation);
             } else {
                 $album = $this->song->album;
             }
         } else {
             // The file is newly added.
             $isCompilation = (bool) array_get($info, 'compilation');
+
             $artist = Artist::get($info['artist']);
+            if(isset($info['albumartist']))
+                $albumArtist = Artist::get($info['albumartist']);
 
             // Check for the presence of a virtual album file in the current folder to override
             // the current song's album tag
@@ -352,10 +357,10 @@ class File
 
             // Check if we need to set up the compilation flag by ourselves
             if (!$isCompilation) {
-                $isCompilation = $this->isLikelyCompilation($info, $artist);
+                $isCompilation = $this->isLikelyCompilation($info, (isset($albumArtist) ? $albumArtist : $artist));
             }
 
-            $album = Album::get($artist, $info['album'], $info['year'], $isCompilation);
+            $album = Album::get((isset($albumArtist) ? $albumArtist : $artist), $info['album'], $info['year'], $isCompilation);
         }
 
         if (!$album->has_cover) {
@@ -373,7 +378,7 @@ class File
 
         // If the song is part of a compilation, make sure we properly set its
         // artist and contributing artist attributes.
-        if ($isCompilation) {
+        if ($isCompilation || (isset($albumArtist) && $albumArtist->id != $artist->id)) {
             $info['contributing_artist_id'] = $artist->id;
         }
 
