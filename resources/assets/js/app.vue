@@ -39,7 +39,7 @@ import { focusDirective, clickawayDirective } from './directives'
 import router from './router'
 
 // Change this to false if you are not using any CMS for login outside of the application
-const USING_CMS = true;
+const USING_CMS = false;
 
 export default {
   components: { siteHeader, siteFooter, mainWrapper, overlay, loginForm, editSongsForm },
