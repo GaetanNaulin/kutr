@@ -237,7 +237,7 @@ class File
 
         $albumFromName = Album::getFromName($info['album']);
 
-        if ($albumFromName !== null && $albumFromName->is_compilation !== 1 &&  $albumFromName->artist_id != $artist->id
+        if ($albumFromName !== null && $albumFromName->is_compilation !== 1 && $albumFromName->artist_id != $artist->id
             && Song::scopeInDirectory(Song::where('album_id', $albumFromName->id), pathinfo($this->path, PATHINFO_DIRNAME))->first() !== null) {
             // It seems the compilation flag should be set
             // Also update the previous album's artist to various artist
@@ -304,6 +304,9 @@ class File
             // A sample command could be: ./artisan koel:sync --force --tags=artist,album,lyrics
             // We cater for these tags by removing those not specified.
 
+            if(isset($info['albumartist']))
+                $albumArtist = isset($info['albumartist']) ? Artist::get($info['albumartist']) : $this->song->album->artist;
+
             // There's a special case with 'album' though.
             // If 'compilation' tag is specified, 'album' must be counted in as well.
             // But if 'album' isn't specified, we don't want to update normal albums.
@@ -323,23 +326,20 @@ class File
             // If the "artist" tag is specified, use it.
             // Otherwise, re-use the existing model value.
             $artist = isset($info['artist']) ? Artist::get($info['artist']) : $this->song->album->artist;
-            if(isset($info['albumartist']))
-                $albumartist = isset($info['albumartist']) ? Artist::get($info['albumartist']) : $this->song->album->artist;
 
             $isCompilation = (bool) array_get($info, 'compilation');
 
             // Check if we need to set up the compilation flag by ourselves
             if (!$isCompilation) {
-                $isCompilation = $this->isLikelyCompilation($info, $artist);
+                $isCompilation = $this->isLikelyCompilation($info, (isset($albumArtist) ? $albumArtist : $artist));
             }
-
 
             // If the "album" tag is specified, use it.
             // Otherwise, re-use the existing model value.
             if (isset($info['album'])) {
                 $album = $changeCompilationAlbumOnly
                     ? $this->song->album
-                    : Album::get((isset($albumartist) ? $albumartist : $artist), $info['album'], $info['year'], $isCompilation);
+                    : Album::get((isset($albumArtist) ? $albumArtist : $artist), $info['album'], $info['year'], $isCompilation);
             } else {
                 $album = $this->song->album;
             }
