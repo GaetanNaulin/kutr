@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "61f2266b5062a2f6d26a721bbeec25ef",
-    "content-hash": "ddceab98e5370eb55552c17b0ebe0d4d",
+    "hash": "e301c4e22bdcb551cd99bc8298626c28",
+    "content-hash": "efee0ae3e6ce3f88456572ad7d380729",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -557,16 +557,16 @@
         },
         {
             "name": "james-heinrich/getid3",
-            "version": "v1.9.13",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JamesHeinrich/getID3.git",
-                "reference": "b9a8564e56bdcc294dc7ade32a7f67885bed3778"
+                "reference": "780f82b3ba43696b5db2b36a295d01a1869fc8e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/b9a8564e56bdcc294dc7ade32a7f67885bed3778",
-                "reference": "b9a8564e56bdcc294dc7ade32a7f67885bed3778",
+                "url": "https://api.github.com/repos/JamesHeinrich/getID3/zipball/780f82b3ba43696b5db2b36a295d01a1869fc8e3",
+                "reference": "780f82b3ba43696b5db2b36a295d01a1869fc8e3",
                 "shasum": ""
             },
             "require": {
@@ -589,7 +589,7 @@
                 "php",
                 "tags"
             ],
-            "time": "2016-12-14 14:29:29"
+            "time": "2017-01-30 17:51:23"
         },
         {
             "name": "jeremeamia/SuperClosure",
@@ -4345,7 +4345,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "james-heinrich/getid3": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
